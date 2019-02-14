@@ -30,11 +30,8 @@ class MainMap extends Component {
       deliveryGroups: [],
       isMarkerHover: false,
       allMarkersVisible: false,
-      hintLayout: null,
       isLoaded: false,
       uniqueCategory: undefined,
-      activeCategory: 'day',
-      activeTab: 'day',
       searchValue: '',
       isNoResultMessage: false,
       tempSelectedMap: {
@@ -76,7 +73,7 @@ class MainMap extends Component {
 
   render() {
     const mapStateInstance = {
-      zoom: 9,
+      zoom: 10,
       center: [55.76, 37.64],
     };
     
