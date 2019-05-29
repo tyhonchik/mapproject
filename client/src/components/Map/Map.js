@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
-  YMaps,
-  Map,
-  GeolocationControl,
-  FullscreenControl,
-  ZoomControl,
-  SearchControl,
+    YMaps,
+    Map,
+    GeolocationControl,
+    FullscreenControl,
+    ZoomControl,
+    SearchControl,
+    Placemark,
 } from 'react-yandex-maps';
 import classNames from 'classnames/bind';
 
@@ -14,117 +15,129 @@ import styles from './Map.sass';
 const cx = classNames.bind(styles);
 
 class MainMap extends Component {
-  static defaultProps = {
-    className: '',
-    mapState: {
-      controls: [],
-    },
-  };
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      selectedPolygonId: undefined,
-      selectedRestaurantId: undefined,
-      deliveryGroups: [],
-      isMarkerHover: false,
-      allMarkersVisible: false,
-      isLoaded: false,
-      uniqueCategory: undefined,
-      searchValue: '',
-      isNoResultMessage: false,
-      tempSelectedMap: {
-        selectedPolygonId: undefined,
-        selectedRestaurantId: undefined,
-      },
+    static defaultProps = {
+        className: '',
+        mapState: {
+            controls: [],
+        },
     };
 
-    this.mapRef = React.createRef();
-  }
+    constructor(props) {
+        super(props);
 
-  handleApiAvaliable = ymaps => {
-    setTimeout(() => {
-      if (this.mapRef) {
-        if (this.props.isPhone) {
-          this.mapRef.behaviors.disable('drag');
-        }
+        this.state = {
+            selectedPolygonId: undefined,
+            selectedRestaurantId: undefined,
+            deliveryGroups: [],
+            isMarkerHover: false,
+            allMarkersVisible: false,
+            isLoaded: false,
+            uniqueCategory: undefined,
+            searchValue: '',
+            isNoResultMessage: false,
+            tempSelectedMap: {
+                selectedPolygonId: undefined,
+                selectedRestaurantId: undefined,
+            },
+        };
 
-        this.mapRef.events.add('boundschange', e => {
-          if (
-            e.originalEvent.newZoom >= 12 &&
-            e.originalEvent.newZoom !== e.originalEvent.oldZoom
-          ) {
-            this.setState({ allMarkersVisible: true });
-          } else if (
-            e.originalEvent.newZoom < 12 &&
-            e.originalEvent.newZoom !== e.originalEvent.oldZoom
-          ) {
-            this.setState({ allMarkersVisible: false });
-          }
+        this.mapRef = React.createRef();
+    }
+
+    handleApiAvaliable = ymaps => {
+        setTimeout(() => {
+            if (this.mapRef) {
+                if (this.props.isPhone) {
+                    this.mapRef.behaviors.disable('drag');
+                }
+
+                this.mapRef.events.add('boundschange', e => {
+                    if (
+                        e.originalEvent.newZoom >= 12 &&
+                        e.originalEvent.newZoom !== e.originalEvent.oldZoom
+                    ) {
+                        this.setState({ allMarkersVisible: true });
+                    } else if (
+                        e.originalEvent.newZoom < 12 &&
+                        e.originalEvent.newZoom !== e.originalEvent.oldZoom
+                    ) {
+                        this.setState({ allMarkersVisible: false });
+                    }
+                });
+            }
+        }, 100);
+
+        this.setState({
+            isLoaded: true,
         });
-      }
-    }, 100);
-
-    this.setState({
-      isLoaded: true,
-    });
-  };
-
-  render() {
-    const mapStateInstance = {
-      zoom: 10,
-      center: [55.76, 37.64],
     };
-    
-    return (
-      <div className='Map'>
-        <YMaps onApiAvaliable={this.handleApiAvaliable}>
-          <div className={cx('Map__layout')}>
-            <Map
-              width="800px"
-              height="400px"
-              state={mapStateInstance}
-              instanceRef={this.mapRef}>
-              <FullscreenControl
-                options={{
-                  float: 'none',
-                  position: {
-                    bottom: '32px',
-                    right: '88px',
-                  },
-                }}
-              />
-              <GeolocationControl
-                options={{
-                  float: 'none',
-                  position: {
-                    bottom: '32px',
-                    right: '136px',
-                  },
-                }}
-              />
-              <ZoomControl
-                options={{
-                  size: 'small',
-                  float: 'none',
-                  position: {
-                    bottom: '32px',
-                    right: '32px',
-                  },
-                }}
-              />
-              <SearchControl
-                options={{
-                  provider: 'yandex#search',
-                }}
-              />
-            </Map>
-          </div>
-        </YMaps>
-      </div>
-    )
-  }
+
+    render() {
+        const mapStateInstance = {
+            zoom: 10,
+            center: [55.76, 37.64],
+        };
+
+        const { points } = this.props;
+
+        return (
+            <div className="Map">
+                <YMaps onApiAvaliable={this.handleApiAvaliable}>
+                    <div className={cx('Map__layout')}>
+                        <Map
+                            width="800px"
+                            height="400px"
+                            state={mapStateInstance}
+                            instanceRef={this.mapRef}
+                        >
+                            <FullscreenControl
+                                options={{
+                                    float: 'none',
+                                    position: {
+                                        bottom: '32px',
+                                        right: '88px',
+                                    },
+                                }}
+                            />
+                            <GeolocationControl
+                                options={{
+                                    float: 'none',
+                                    position: {
+                                        bottom: '32px',
+                                        right: '136px',
+                                    },
+                                }}
+                            />
+                            <ZoomControl
+                                options={{
+                                    size: 'small',
+                                    float: 'none',
+                                    position: {
+                                        bottom: '32px',
+                                        right: '32px',
+                                    },
+                                }}
+                            />
+                            <SearchControl
+                                options={{
+                                    provider: 'yandex#search',
+                                }}
+                            />
+                            {points &&
+                                points.map(point => (
+                                    <Placemark
+                                        geometry={[point[1], point[0]]}
+                                        options={{
+                                            preset: 'islands#redCircleDotIcon',
+                                        }}
+                                    />
+                                ))}
+                        </Map>
+                    </div>
+                </YMaps>
+            </div>
+        );
+    }
 }
 
 export default MainMap;
