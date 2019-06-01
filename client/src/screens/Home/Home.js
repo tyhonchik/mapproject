@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from 'reactn';
 import Map from '../../components/Map';
 
 class Home extends Component {
@@ -23,27 +23,14 @@ class Home extends Component {
         return body;
     };
 
-    handleSubmit = async e => {
+    handleSubmit = e => {
         e.preventDefault();
 
-        fetch('/api/world', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ post: this.state.post }),
-        })
-            .then(res => res.json())
-            .then(data => {
-                const arr = ((data || {}).features || []).map(
-                    feat => feat.geometry.coordinates
-                );
-
-                this.setState({ responseToPost: arr });
-            });
+        this.dispatch.search(this.state.post);
     };
 
     render() {
+        console.log(this.global);
         return (
             <div className="App">
                 <p>{this.state.response}</p>
