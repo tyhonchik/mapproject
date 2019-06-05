@@ -1,68 +1,43 @@
-import React, { Component } from 'react';
-import Map from "../../components/Map";
+import React, { Component } from 'reactn';
+import Map from '../../components/Map';
 
 class Home extends Component {
-  state = {
-    response: '',
-    post: '',
-    responseToPost: '',
-  };
+    state = {
+        response: '',
+        post: '',
+        responseToPost: '',
+    };
 
-  componentDidMount() {
-    this.callApi()
-      .then(res => this.setState({ response: res.express }))
-      .catch(err => console.log(err));
-  }
+    handleSubmit = e => {
+        e.preventDefault();
 
-  callApi = async () => {
-    const response = await fetch('/api/hello');
-    const body = await response.json();
+        this.dispatch.searchv2(this.state.post);
+    };
 
-    if (response.status !== 200) throw Error(body.message);
+    render() {
+        console.log(this.global);
+        return (
+            <div className="App">
+                <p>{this.state.response}</p>
+                <form onSubmit={this.handleSubmit}>
+                    <p>
+                        <strong>Post to Server:</strong>
+                    </p>
+                    <input
+                        type="text"
+                        value={this.state.post}
+                        onChange={e => this.setState({ post: e.target.value })}
+                    />
+                    <button type="submit">Submit</button>
+                </form>
 
-    return body;
-  };
-
-  handleSubmit = async e => {
-    e.preventDefault();
-
-    const response = await fetch('/api/world', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ post: this.state.post }),
-    });
-
-    const body = await response.text();
-
-    this.setState({ responseToPost: body });
-  };
-
-  render() {
-    return (
-      <div className="App">
-        <p>{this.state.response}</p>
-        <form onSubmit={this.handleSubmit}>
-          <p>
-            <strong>Post to Server:</strong>
-          </p>
-          <input
-            type="text"
-            value={this.state.post}
-            onChange={e => this.setState({ post: e.target.value })}
-          />
-          <button type="submit">Submit</button>
-        </form>
-        <p>{this.state.responseToPost}</p>
-
-        <Map />
-        {
-          // TODO: add Formik || Final-Form
-        }
-      </div>
-    );
-  }
+                <Map points={this.global.coords} />
+                {
+                    // TODO: add Formik || Final-Form
+                }
+            </div>
+        );
+    }
 }
 
 export default Home;
