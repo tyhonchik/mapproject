@@ -6,6 +6,7 @@ import * as serviceWorker from './serviceWorker';
 
 setGlobal({
     orgs: {},
+    coords: [],
 });
 
 addReducer('search', (global, dispatch, _searchString) =>
@@ -23,6 +24,14 @@ addReducer('search', (global, dispatch, _searchString) =>
                     feat => feat.geometry.coordinates
                 ),
             },
+        }))
+);
+
+addReducer('searchv2', (global, dispatch, _searchString) =>
+    fetch(`/api/v1.0/search/${_searchString}`)
+        .then(res => res.json())
+        .then(data => ({
+            coords: data,
         }))
 );
 

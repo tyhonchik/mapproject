@@ -14,6 +14,25 @@ import styles from './Map.sass';
 
 const cx = classNames.bind(styles);
 
+const colors = [
+    'islands#blueCircleDotIcon',
+    'islands#darkGreenCircleDotIcon',
+    'islands#redCircleDotIcon',
+    'islands#violetCircleDotIcon',
+    'islands#darkOrangeCircleDotIcon',
+    'islands#blackCircleDotIcon',
+    'islands#nightCircleDotIcon',
+    'islands#yellowCircleDotIcon',
+    'islands#darkBlueCircleDotIcon',
+    'islands#greenCircleDotIcon',
+    'islands#pinkCircleDotIcon',
+    'islands#orangeCircleDotIcon',
+    'islands#grayCircleDotIcon',
+    'islands#lightBlueCircleDotIcon',
+    'islands#brownCircleDotIcon',
+    'islands#oliveCircleDotIcon',
+];
+
 class MainMap extends Component {
     static defaultProps = {
         className: '',
@@ -124,14 +143,17 @@ class MainMap extends Component {
                                 }}
                             />
                             {points &&
-                                points.map(point => (
-                                    <Placemark
-                                        geometry={[point[1], point[0]]}
-                                        options={{
-                                            preset: 'islands#redCircleDotIcon',
-                                        }}
-                                    />
-                                ))}
+                                points.length > 0 &&
+                                points.map((group, index) => {
+                                    return group.map(point => (
+                                        <Placemark
+                                            geometry={[point[1], point[0]]}
+                                            options={{
+                                                preset: colors[index],
+                                            }}
+                                        />
+                                    ));
+                                })}
                         </Map>
                     </div>
                 </YMaps>
