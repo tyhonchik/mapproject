@@ -10,7 +10,7 @@
         "react-dom": "^16.8.6",
         "react-scripts": "3.0.1",
         "react-yandex-maps": "^3.0.2",
-        "reactn": "^2.0.3"
+        "reactn": "^2.1.2"
     },
     "scripts": {
         "start": "react-scripts start",
